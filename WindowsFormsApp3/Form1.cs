@@ -61,7 +61,29 @@ namespace WindowsFormsApp3
 
         private void UpdateScreen(object sender, EventArgs e)
         {
+            if(Settings.GameOver)
+            {
+                if (Input.KeyPressed(Keys.Left) && Settings.direction != Direction.Right)
+                {
+                    Settings.direction = Direction.Left;
+                }
+                else if (Input.KeyPressed(Keys.Right) && Settings.direction != Direction.Left) 
+                {
+                    Settings.direction = Direction.Right;
+                }
+                if (Input.KeyPressed(Keys.Up) && Settings.direction != Direction.Down)
+                {
+                    Settings.direction = Direction.Up;
+                }
+                else if(Input.KeyPressed(Keys.Down) && Settings.direction != Direction.Up)
+                {
+                    Settings.direction = Direction.Down;
+                }
 
+                MovePlayer();
+            }
+
+            pbCanvas.Invalidate();
         }
 
         private void pbCanvas_Paint(object sender, PaintEventArgs e)
