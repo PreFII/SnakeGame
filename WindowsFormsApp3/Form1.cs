@@ -180,7 +180,7 @@ namespace WindowsFormsApp3
         WindowsFormsApp3.Add(eatenFood);
 
         Settings.Score += Settings.Points;
-        label1.Text = Settings.Score.ToString();
+        label1.Text = "Score: " + Settings.Score.ToString();
 
             Settings.Speed++;
             gameTimer.Interval = 1000 / Settings.Speed;
