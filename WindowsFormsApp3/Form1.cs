@@ -27,11 +27,11 @@ namespace WindowsFormsApp3
             gameTimer.Tick += UpdateScreen;
             gameTimer.Start();
 
-            int maxXPos = pbCanvas.Size.Width / Settings.Wibth;
-            int maxYPos = pbCanvas.Size.Height / Settings.Height;
+            maxXPos = pbCanvas.Size.Width / Settings.Wibth;
+            maxYPos = pbCanvas.Size.Height / Settings.Height;
 
             StartGame();
-        }       
+        }
 
         private void StartGame()
         {
@@ -42,8 +42,8 @@ namespace WindowsFormsApp3
             WindowsFormsApp3.Clear();
             Circle head = new Circle();
             Random random = new Random();
-            head.X = 10;
-            head.Y = 5;
+            head.X = random.Next(0, maxXPos);
+            head.Y = random.Next(0, maxYPos);
             WindowsFormsApp3.Add(head);
 
             label1.Text = Settings.Score.ToString();
@@ -61,13 +61,18 @@ namespace WindowsFormsApp3
 
         private void UpdateScreen(object sender, EventArgs e)
         {
-            if(Settings.GameOver)
+            if (Settings.GameOver)
+            {
+                if (Input.KeyPressed(Keys.Enter))
+                    StartGame();
+            }
+            else
             {
                 if (Input.KeyPressed(Keys.Left) && Settings.direction != Direction.Right)
                 {
                     Settings.direction = Direction.Left;
                 }
-                else if (Input.KeyPressed(Keys.Right) && Settings.direction != Direction.Left) 
+                else if (Input.KeyPressed(Keys.Right) && Settings.direction != Direction.Left)
                 {
                     Settings.direction = Direction.Right;
                 }
@@ -75,7 +80,7 @@ namespace WindowsFormsApp3
                 {
                     Settings.direction = Direction.Up;
                 }
-                else if(Input.KeyPressed(Keys.Down) && Settings.direction != Direction.Up)
+                else if (Input.KeyPressed(Keys.Down) && Settings.direction != Direction.Up)
                 {
                     Settings.direction = Direction.Down;
                 }
@@ -94,7 +99,7 @@ namespace WindowsFormsApp3
             {
                 Brush snakeColor;
 
-                for(int i = 0; i < WindowsFormsApp3.Count;i++)
+                for (int i = 0; i < WindowsFormsApp3.Count; i++)
                 {
                     if (i == 0)
                         snakeColor = Brushes.Black;
@@ -105,7 +110,7 @@ namespace WindowsFormsApp3
                         new Rectangle(WindowsFormsApp3[i].X * Settings.Wibth,
                                          WindowsFormsApp3[i].Y * Settings.Height,
                                          Settings.Wibth,
-                                         Settings.Height));    
+                                         Settings.Height));
                 }
                 canvas.FillEllipse(Brushes.Red,
                         new Rectangle(food.X * Settings.Wibth,
@@ -117,28 +122,86 @@ namespace WindowsFormsApp3
 
         private void MovePlayer()
         {
+            for (int i = WindowsFormsApp3.Count - 1; i >= 0; i--)
+            {
+                if (i == 0)
+                {
+                    switch (Settings.direction)
+                    {
+                        case Direction.Up:
+                            WindowsFormsApp3[i].Y--;
+                            break;
+                        case Direction.Down:
+                            WindowsFormsApp3[i].Y++;
+                            break;
+                        case Direction.Left:
+                            WindowsFormsApp3[i].X--;
+                            break;
+                        case Direction.Right:
+                            WindowsFormsApp3[i].X++;
+                            break;
 
+                    }
+                    if (WindowsFormsApp3[i].X > maxXPos || WindowsFormsApp3[i].X < 0 || WindowsFormsApp3[i].Y > maxYPos || WindowsFormsApp3[i].Y < 0)
+                        Die();
+
+                    for (int j = 1; j < WindowsFormsApp3.Count; j++)
+                    {
+                        if (WindowsFormsApp3[0].X == WindowsFormsApp3[j].X && WindowsFormsApp3[0].Y == WindowsFormsApp3[j].Y)
+                        {
+                            Die();
+                            break;
+                        }
+                    }
+                
+                if (WindowsFormsApp3[0].X == food.X && WindowsFormsApp3[0].Y == food.Y)
+                    Eat();
+
+            }
+                else
+            {
+                WindowsFormsApp3[i].X = WindowsFormsApp3[i - 1].X;
+                WindowsFormsApp3[i].Y = WindowsFormsApp3[i - 1].Y;
+            }
         }
+    }
 
-        private void Die()
+    private void Die()
+    {
+        Settings.GameOver = true;
+    }
+
+    private void Eat()
+    {
+        Circle eatenFood = new Circle();
+        eatenFood.X = WindowsFormsApp3[WindowsFormsApp3.Count - 1].X;
+        eatenFood.Y = WindowsFormsApp3[WindowsFormsApp3.Count - 1].Y;
+
+        WindowsFormsApp3.Add(eatenFood);
+
+        Settings.Score += Settings.Points;
+        label1.Text = Settings.Score.ToString();
+
+            Settings.Speed++;
+            gameTimer.Interval = 1000 / Settings.Speed;
+
+        GenerateFood();
+
+    }
+
+    private void pbCanvas_Click(object sender, EventArgs e)
+    {
+
+    }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            Settings.GameOver = true;
+            Input.ChangeState(e.KeyCode, true);
         }
 
-        private void Eat()
+        private void Form1_KeyUp(object sender, KeyEventArgs e)
         {
-            Circle eatenFood = new Circle();
-            eatenFood.X = WindowsFormsApp3[WindowsFormsApp3.Count - 1].X;
-            eatenFood.Y = WindowsFormsApp3[WindowsFormsApp3.Count - 1].Y;
-
-            WindowsFormsApp3.Add(eatenFood);
-            Settings.Score += Settings.Points;
-            label1.Text = Settings.Score.ToString();
-
-            GenerateFood();
-
+            Input.ChangeState(e.KeyCode, false);
         }
-
-       
     }
 }

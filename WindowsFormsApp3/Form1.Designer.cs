@@ -38,12 +38,13 @@
             // 
             // pbCanvas
             // 
+            this.pbCanvas.BackColor = System.Drawing.SystemColors.HotTrack;
             this.pbCanvas.Location = new System.Drawing.Point(12, 12);
             this.pbCanvas.Name = "pbCanvas";
             this.pbCanvas.Size = new System.Drawing.Size(501, 426);
             this.pbCanvas.TabIndex = 0;
             this.pbCanvas.TabStop = false;
-            
+            this.pbCanvas.Click += new System.EventHandler(this.pbCanvas_Click);
             this.pbCanvas.Paint += new System.Windows.Forms.PaintEventHandler(this.pbCanvas_Paint);
             // 
             // label1
@@ -64,10 +65,6 @@
             this.lblGameOverfc.TabIndex = 2;
             this.lblGameOverfc.Text = "label2";
             // 
-            // gameTimer
-            // 
-            
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -78,6 +75,8 @@
             this.Controls.Add(this.pbCanvas);
             this.Name = "Form1";
             this.Text = "Form1";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+            this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyUp);
             ((System.ComponentModel.ISupportInitialize)(this.pbCanvas)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
